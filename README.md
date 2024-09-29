@@ -14,7 +14,8 @@ pip3 install git+https://github.com/TreexHD/robotSystem.git
 ```
 
 # Basic Usage
-The file [Example1](https://github.com/TreexHD/robotSystem/tree/main/examples/example1.py) shows a simple starting script.
+The file [Example1](https://github.com/TreexHD/robotSystem/tree/main/examples/example1.py) shows a simple starting 
+script you can just copy. 
 
 # Documentation
 

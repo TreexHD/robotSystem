@@ -22,4 +22,5 @@ if __name__ == "__main__":
             loop()
     except BaseException as e:
         Robot.Debug.error_imp("Stopped: " + str(e))
+        Robot.terminate()
         exit(42)
