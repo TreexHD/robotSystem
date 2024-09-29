@@ -33,7 +33,8 @@ class Robot:
         self.Debug = robotsystem.debug.Debug
         if not isWindows:
             self.MCP3008 = robotsystem.bus.MCP3008()
-            self.IO = robotsystem.bus.IO()
+            self.IO = robotsystem.bus.IO(GPIO)
+            self.bus = robotsystem.bus.I2C(self.IO)
 
     def terminate(self):
         """
