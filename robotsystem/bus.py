@@ -17,6 +17,7 @@ class I2C:  # NANO ADDRESS 0x08
         time.sleep(1)
         Debug.info("SMBus ready")
 
+
     def write_data(self, address, first, second, third):
         data = [first, second, third]
         # Debug.msg("Sending data:" + str(data))
