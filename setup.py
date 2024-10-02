@@ -12,7 +12,11 @@ setup(
     author_email="<no.mail>",
     description=DESCRIPTION,
     packages=find_packages(),
-    install_requires=[],
+    install_requires=[
+        'smbus>=1.1.post2',
+        'spidev>=3.6',
+        ''
+    ],
     keywords=['python'],
     classifiers=[
         "Development Status :: 1 - Planning",

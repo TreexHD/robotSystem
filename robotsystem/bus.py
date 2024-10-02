@@ -14,7 +14,12 @@ TOF1 = 17
 TOF2 = 5
 TOF3 = 6
 TOF4 = 26
+PCA9685_ADDRESS = 0x40
 
+#Registers of PCA9685
+MODE1 = 0x00
+PRESCALE = 0xFE
+LED0_ON_L = 0x06
 
 class I2C:  # NANO ADDRESS 0x08
     def __init__(self, io):
@@ -27,9 +32,33 @@ class I2C:  # NANO ADDRESS 0x08
 
         #actions
         self.init_all_tofs()
+        self.initialize_pca9685()
 
         time.sleep(1)
         Debug.info("SMBus ready (I2C)")
+
+    def initialize_pca9685(self):
+        # Initialize the PCA9685 chip
+        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, 0x00)  # Normal mode
+        self.set_pwm_freq_pca9685(50)  # Set frequency to 50Hz
+
+    def set_pwm_freq_pca9685(self, freq_hz):
+        # Set the PWM frequency
+        prescale_val = int(25000000.0 / (4096 * freq_hz) - 1)
+        old_mode = self.bus.read_byte_data(PCA9685_ADDRESS, MODE1)
+        new_mode = (old_mode & 0x7F) | 0x10  # Sleep
+        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, new_mode)
+        self.bus.write_byte_data(PCA9685_ADDRESS, PRESCALE, prescale_val)
+        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, old_mode)
+        time.sleep(0.005)
+        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, old_mode | 0x80)
+
+    def set_pwm_pca9685(self, channel: int, on: int, off: int):
+        # Set the PWM value for a specific channel
+        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel, on & 0xFF)
+        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 1, on >> 8)
+        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 2, off & 0xFF)
+        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 3, off >> 8)
 
     def write_data(self, address, first, second, third):
         data = [first, second, third]
@@ -160,9 +189,9 @@ class IO:
 
         # init GPIOs
         GPIO.setup(27, GPIO.OUT)  # GPIO 27 red light sensor
-        GPIO.output(27, 1)
+        GPIO.output(27, 0)
         GPIO.setup(22, GPIO.OUT)  # GPIO 22 green light sensor
-        GPIO.output(22, 1)
+        GPIO.output(22, 0)
         GPIO.setup(23, GPIO.OUT)  # GPIO 23 red status led
         GPIO.output(23, 0)
         #TOFS
@@ -176,6 +205,25 @@ class IO:
         GPIO.output(TOF4, 1)
 
         GPIO.setup(25, GPIO.IN)  # GPIO 25 Restart Button
+
+    def set_sensor_leds(self, colour: int):
+        """
+        set the colour of the sensor leds
+        :param colour: 0=off 1=red 2=green
+        :return:
+        """
+        if colour==0 :
+            GPIO.output(27, 0)
+            GPIO.output(22, 0)
+        elif colour == 1:
+            GPIO.output(27, 1)
+            GPIO.output(22, 0)
+        elif colour == 2:
+            GPIO.output(27, 0)
+            GPIO.output(22, 1)
+        else:
+            Debug.warning(str(colour) + " is not a valid number for sensor colour!")
+
 
     def set(self, pin: int, state: int):
         GPIO.output(pin, state)

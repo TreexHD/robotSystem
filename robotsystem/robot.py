@@ -84,18 +84,111 @@ class Robot:
         """
         return self.MCP3008.get_one(pin)
 
-    def move(self, motor_a: float, motor_b: float, motor_c: float, motor_d: float) -> None:
+    def set_sensor_leds(self, colour: int):
         """
-        set the individual motor direction and speed (-100 bis 100)
-        :param motor_a: for motor A
-        :param motor_b: for motor B
-        :param motor_c: for motor C
-        :param motor_d: for motor D
+        set the colour of the sensor leds
+        :param colour: 0=off 1=red 2=green
         :return:
         """
-        motor_a = map_range(motor_a, -100, 100, 0, 4090)
+        self.IO.set_sensor_leds(colour)
 
+    def move_tc1508a(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
+        """
+        set the individual motor direction and speed (-4096 bis 4096)
+        :param motor_1: for motor 1
+        :param motor_2: for motor 2
+        :param motor_3: for motor 3
+        :param motor_4: for motor 4
+        :return:
+        """
+        #Motor 1
+        if motor_1 > 0:
+            m1a = motor_1
+            m1b = 0
+        else:
+            m1a = 0
+            m1b = motor_1 * -1
+        # Motor 2
+        if motor_2 > 0:
+            m2a = motor_2
+            m2b = 0
+        else:
+            m2a = 0
+            m2b = motor_2 * -1
+        # Motor 3
+        if motor_3 > 0:
+            m3a = motor_3
+            m3b = 0
+        else:
+            m3a = 0
+            m3b = motor_3 * -1
+        # Motor 4
+        if motor_4 > 0:
+            m4a = motor_4
+            m4b = 0
+        else:
+            m4a = 0
+            m4b = motor_4 * -1
 
+        self.bus.set_pwm_pca9685(0, 0, m1a)
+        self.bus.set_pwm_pca9685(4, 0, m1b)
 
+        self.bus.set_pwm_pca9685(1, 0, m2a)
+        self.bus.set_pwm_pca9685(5, 0, m2b)
 
+        self.bus.set_pwm_pca9685(2, 0, m3a)
+        self.bus.set_pwm_pca9685(6, 0, m3b)
+
+        self.bus.set_pwm_pca9685(3, 0, m4a)
+        self.bus.set_pwm_pca9685(7, 0, m4b)
+
+    def move_l293(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
+        """
+        set the individual motor direction and speed (-4096 bis 4096)
+        :param motor_1: for motor 1
+        :param motor_2: for motor 2
+        :param motor_3: for motor 3
+        :param motor_4: for motor 4
+        :return:
+        """
+        #Motor 1
+        if motor_1 > 0:
+            m1a = 4096
+            m1b = motor_1
+        else:
+            m1a = 0
+            m1b = motor_1 * -1
+        # Motor 2
+        if motor_2 > 0:
+            m2a = 4096
+            m2b = motor_2
+        else:
+            m2a = 0
+            m2b = motor_2 * -1
+        # Motor 3
+        if motor_3 > 0:
+            m3a = 4096
+            m3b = motor_3
+        else:
+            m3a = 0
+            m3b = motor_3 * -1
+        # Motor 4
+        if motor_4 > 0:
+            m4a = 4096
+            m4b = motor_4
+        else:
+            m4a = 0
+            m4b = motor_4 * -1
+
+        self.bus.set_pwm_pca9685(0, 0, m1a)
+        self.bus.set_pwm_pca9685(4, 0, m1b)
+
+        self.bus.set_pwm_pca9685(1, 0, m2a)
+        self.bus.set_pwm_pca9685(5, 0, m2b)
+
+        self.bus.set_pwm_pca9685(2, 0, m3a)
+        self.bus.set_pwm_pca9685(6, 0, m3b)
+
+        self.bus.set_pwm_pca9685(3, 0, m4a)
+        self.bus.set_pwm_pca9685(7, 0, m4b)
 
