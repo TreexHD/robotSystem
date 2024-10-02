@@ -9,14 +9,27 @@ if platform.system() == "Linux":
     import smbus
     import RPi.GPIO as GPIO
 
+# CONSTANTS
+TOF1 = 17
+TOF2 = 5
+TOF3 = 6
+TOF4 = 26
+
 
 class I2C:  # NANO ADDRESS 0x08
     def __init__(self, io):
         self.io = io
         self.bus = smbus.SMBus(1)
-        time.sleep(1)
-        Debug.info("SMBus ready")
+        self.distances = [None, -1, -1, -1, -1]  # The distances of the TOF sensors
 
+        #locals
+        self.__initialized_tofs = []
+
+        #actions
+        self.init_all_tofs()
+
+        time.sleep(1)
+        Debug.info("SMBus ready (I2C)")
 
     def write_data(self, address, first, second, third):
         data = [first, second, third]
@@ -25,6 +38,13 @@ class I2C:  # NANO ADDRESS 0x08
             self.bus.write_i2c_block_data(address, 0, data)
         except Exception as e:
             Debug.error("Error sending I2C data: " + str(e))
+
+    def init_all_tofs(self):
+        for i in range(4):
+            try:
+                self.init_tof(i + 1)
+            except:
+                Debug.msg("No TOF at PIN: " + str(i + 1))
 
     def init_tof(self, pin: int):
         """
@@ -36,7 +56,24 @@ class I2C:  # NANO ADDRESS 0x08
         default_address = 0x29
         desired_address = 0x29 + pin
 
-        # TODO disable all other tofs
+        if pin == 1:
+            self.io.set(TOF2, 0)
+            self.io.set(TOF3, 0)
+            self.io.set(TOF4, 0)
+        elif pin == 2:
+            self.io.set(TOF1, 0)
+            self.io.set(TOF3, 0)
+            self.io.set(TOF4, 0)
+        elif pin == 3:
+            self.io.set(TOF1, 0)
+            self.io.set(TOF2, 0)
+            self.io.set(TOF4, 0)
+        elif pin == 4:
+            self.io.set(TOF1, 0)
+            self.io.set(TOF2, 0)
+            self.io.set(TOF3, 0)
+
+        time.sleep(0.01)
 
         try:
             # Change address of tof
@@ -73,9 +110,16 @@ class I2C:  # NANO ADDRESS 0x08
             self.bus.write_byte_data(desired_address, 0x01ac, 0x3e)  # SYSTEM__MODE_GPIO0
             self.bus.write_byte_data(desired_address, 0x01a7, 0x1f)  # SYSTEM__MODE_GPIO0
             self.bus.write_byte_data(desired_address, 0x0030, 0x00)  # SYSTEM__MODE_GPIO0
+            self.__initialized_tofs.append(pin)
+            Debug.msg("Initialized TOF" + str(pin))
         except Exception as e:
             Debug.error("Cant init TOF on pin " + str(pin) + " :" + str(e))
             raise
+
+        self.io.set(TOF1, 1)
+        self.io.set(TOF2, 1)
+        self.io.set(TOF3, 1)
+        self.io.set(TOF4, 1)
 
     def read_tof(self, pin: int) -> int:
         """
@@ -89,12 +133,25 @@ class I2C:  # NANO ADDRESS 0x08
 
         try:
             self.bus.write_byte_data(desired_address, 0x0180, 0x01)  # SYSRANGE__START
-            time.sleep(0.001)  # WAIT
-            distance = self.bus.read_byte_data(desired_address, 0x062)  # RESULT__RANGE_VAL
+            time.sleep(0.01)  # WAIT
+            distance = int(self.bus.read_byte_data(desired_address, 0x062))  # RESULT__RANGE_VAL
             return distance
         except Exception as e:
             Debug.error("Cant read TOF on pin " + str(pin) + " :" + str(e))
             return -1
+
+    def update_tof(self) -> None:
+        """
+        updates the tof distances without delay. The distance is delayed because of that
+        :return:
+        """
+        desired_address = 0x29
+        for i in self.__initialized_tofs:
+            try:
+                self.bus.write_byte_data(desired_address + i, 0x0180, 0x01)  # SYSRANGE__START
+                self.distances[i + 1] = int(self.bus.read_byte_data(desired_address + i, 0x062))  # RESULT__RANGE_VAL
+            except Exception as e:
+                Debug.error("Cant read TOF on pin " + str(i) + " :" + str(e))
 
 
 class IO:
@@ -108,6 +165,15 @@ class IO:
         GPIO.output(22, 1)
         GPIO.setup(23, GPIO.OUT)  # GPIO 23 red status led
         GPIO.output(23, 0)
+        #TOFS
+        GPIO.setup(TOF1, GPIO.OUT)
+        GPIO.output(TOF1, 1)
+        GPIO.setup(TOF2, GPIO.OUT)
+        GPIO.output(TOF2, 1)
+        GPIO.setup(TOF3, GPIO.OUT)
+        GPIO.output(TOF3, 1)
+        GPIO.setup(TOF4, GPIO.OUT)
+        GPIO.output(TOF4, 1)
 
         GPIO.setup(25, GPIO.IN)  # GPIO 25 Restart Button
 
@@ -140,6 +206,35 @@ class MCP3008:
         adc = self.spi.xfer2([cmd1, cmd2, 0])
         data = ((adc[1] & 15) << 8) + adc[2]
         return data
+
+    def get_one(self, pin: int) -> int:
+        """
+        reads a specific sensor
+        :return: returns the value
+        """
+        if isWindows:
+            return -1
+        return int(self.read(channel=pin))
+
+    def get_greyscale(self, threshold: [int]) -> int:
+        """
+        reads all sensor datas
+        :return: a 5 digit number, example: 11100 = BBBWW
+        """
+        if isWindows:
+            return -1
+        x = int(0)
+        if int(self.read(channel=1)) > threshold[1]:
+            x += 10000  # LL
+        if int(self.read(channel=2)) > threshold[2]:
+            x += 1000  # L
+        if int(self.read(channel=3)) > threshold[3]:
+            x += 100  # M
+        if int(self.read(channel=4)) > threshold[4]:
+            x += 10  # R
+        if int(self.read(channel=5)) > threshold[5]:
+            x += 1  # RR
+        return x
 
     def close(self):
         self.spi.close()

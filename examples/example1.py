@@ -5,7 +5,7 @@ def setup():
     """
     your setup code here
     """
-    Robot.Debug.okblue("Setup Complete...")
+    Robot.Debug.msg("Hello World")
 
 
 def loop():
@@ -17,9 +17,11 @@ def loop():
 if __name__ == "__main__":
     Robot = robotsystem.robot.Robot()
     setup()
+    Robot.Debug.okblue("Setup Complete...")
     try:
         while True:
             loop()
+            Robot.update()
     except BaseException as e:
         Robot.Debug.error_imp("Stopped: " + str(e))
         Robot.terminate()
