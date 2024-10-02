@@ -92,6 +92,29 @@ class Robot:
         """
         self.IO.set_sensor_leds(colour)
 
+    def set_servo_degree(self, pin: int, degree: int):
+        """
+        set the angle of a specific servo with the pin 0-4
+        :param pin: the pin of the servo
+        :param degree: angle in degree
+        :return:
+        """
+        if pin < 0 or pin > 4:
+            raise Exception(str(pin) + " is no a valid servo PIN")
+        degree = map_range(degree, 0, 180, 0,4096)
+        self.bus.set_pwm_pca9685(12-pin, 0, degree)
+
+    def set_mode_led_on(self, on: bool):
+        """
+        set the mode led, to on or off
+        :param on: led on
+        :return:
+        """
+        if on:
+            self.IO.set(23, 1)
+        else:
+            self.IO.set(23, 0)
+
     def move_tc1508a(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
         """
         set the individual motor direction and speed (-4096 bis 4096)

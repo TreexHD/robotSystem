@@ -40,7 +40,7 @@ class I2C:  # NANO ADDRESS 0x08
     def initialize_pca9685(self):
         # Initialize the PCA9685 chip
         self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, 0x00)  # Normal mode
-        self.set_pwm_freq_pca9685(50)  # Set frequency to 50Hz
+        self.set_pwm_freq_pca9685(100)  # Set frequency to 100Hz
 
     def set_pwm_freq_pca9685(self, freq_hz):
         # Set the PWM frequency
@@ -187,6 +187,14 @@ class IO:
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
 
+        #init inputs
+        GPIO.setup(24, GPIO.IN)  # GPIO 24 Mode Button (SW3)
+        GPIO.setup(25, GPIO.IN)  # GPIO 25 Restart Button (SW4)
+
+        #interrupt
+        GPIO.add_event_detect(25, GPIO.FALLING,
+                              callback=self.restart_callback, bouncetime=100)
+
         # init GPIOs
         GPIO.setup(27, GPIO.OUT)  # GPIO 27 red light sensor
         GPIO.output(27, 0)
@@ -205,6 +213,9 @@ class IO:
         GPIO.output(TOF4, 1)
 
         GPIO.setup(25, GPIO.IN)  # GPIO 25 Restart Button
+
+    def restart_callback(self):
+        pass
 
     def set_sensor_leds(self, colour: int):
         """
