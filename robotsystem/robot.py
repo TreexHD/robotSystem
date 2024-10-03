@@ -115,6 +115,14 @@ class Robot:
         else:
             self.IO.set(23, 0)
 
+    def set_restart_callback(self, func):
+        """
+        set the callback function on reset button press
+        :param func: the function name
+        :return:
+        """
+        self.IO.func_callback = func
+
     def move_tc1508a(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
         """
         set the individual motor direction and speed (-4096 bis 4096)

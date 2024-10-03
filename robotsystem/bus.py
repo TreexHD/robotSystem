@@ -185,6 +185,7 @@ class I2C:  # NANO ADDRESS 0x08
 
 class IO:
     def __init__(self):
+        self.func_callback = None
         GPIO.setmode(GPIO.BCM)
 
         #init inputs
@@ -215,7 +216,10 @@ class IO:
         GPIO.setup(25, GPIO.IN)  # GPIO 25 Restart Button
 
     def restart_callback(self):
-        pass
+        Debug.okblue("Restart Pressed")
+        if self.func_callback is not None:
+            self.func_callback()
+
 
     def set_sensor_leds(self, colour: int):
         """
