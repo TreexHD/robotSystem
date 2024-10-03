@@ -32,6 +32,7 @@ def map_range(x, in_min, in_max, out_min, out_max):
 class Robot_:
 
     def __init__(self):
+        self.motor_driver = self.__move_l293
         self.threshold = [None, 2350, 2350, 2350, 2350, 2350, 3900, 3900]
         self.Debug = robotsystem.debug.Debug()
         self.distances = [None, -1, -1, -1, -1]
@@ -81,6 +82,16 @@ class Robot_:
         if pin < 0 or pin > 4096:
             raise Exception(str(value) + " is not a valid VALUE")
         self.threshold[pin] = value
+
+    def set_motor_driver(self, l293: bool) -> None:
+        """
+        select the motor driver type l293 or tc1508a
+        :param l293: is l293
+        """
+        if l293:
+            self.motor_driver = self.__move_l293
+        else:
+            self.motor_driver = self.__move_tc1508a
 
     def get_distance(self, pin: int) -> int:
         """
@@ -171,7 +182,10 @@ class Robot_:
         """
         self.IO.mde_callback = func
 
-    def move_tc1508a(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
+    def move(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
+        self.motor_driver(motor_1, motor_2, motor_3, motor_4)
+
+    def __move_tc1508a(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
         """
         set the individual motor direction and speed (-4096 bis 4096)
         :param motor_1: for motor 1
@@ -221,7 +235,7 @@ class Robot_:
         self.bus.set_pwm_pca9685(3, 0, m4a)
         self.bus.set_pwm_pca9685(7, 0, m4b)
 
-    def move_l293(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
+    def __move_l293(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
         """
         set the individual motor direction and speed (-4096 bis 4096)
         :param motor_1: for motor 1

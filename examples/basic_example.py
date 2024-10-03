@@ -21,8 +21,8 @@ if __name__ == "__main__":
     Robot.Debug.okblue("Setup Complete...")
     try:
         while True:
-            loop()
             Robot.update()
+            loop()
     except BaseException as e:
         Robot.Debug.error_imp("Stopped: " + str(e))
         Robot.terminate()
