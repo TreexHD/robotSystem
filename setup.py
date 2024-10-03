@@ -14,8 +14,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'smbus>=1.1.post2',
-        'spidev>=3.6',
-        ''
+        'spidev>=3.6'
     ],
     keywords=['python'],
     classifiers=[

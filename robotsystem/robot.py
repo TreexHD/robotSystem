@@ -2,6 +2,9 @@
 this is the main module
 """
 import platform
+import time
+
+from robotsystem.debug import Debug
 
 isWindows = True
 if platform.system() == "Linux":
@@ -26,11 +29,11 @@ def map_range(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
 
 
-class Robot:
+class Robot_:
 
     def __init__(self):
-        self.threshold = [0, 2350, 2350, 2350, 2350, 2350, 3900, 3900]
-        self.Debug = robotsystem.debug.Debug
+        self.threshold = [None, 2350, 2350, 2350, 2350, 2350, 3900, 3900]
+        self.Debug = robotsystem.debug.Debug()
         self.distances = [None, -1, -1, -1, -1]
         self.grayscale = -1
         if not isWindows:
@@ -38,12 +41,23 @@ class Robot:
             self.IO = robotsystem.bus.IO()
             self.bus = robotsystem.bus.I2C(self.IO)
 
+    def delay(self, delay_in_ms: int):
+        """
+        wait milliseconds
+        :param delay_in_ms:
+        :return:
+        """
+        time.sleep(delay_in_ms/1000)
+
     def terminate(self):
         """
         terminates the whole process correctly
         :return:
         """
-        self.IO.cleanup()
+        try:
+            self.IO.cleanup()
+        except Exception as e:
+            Debug.error_imp(str(e) + " --- Couldn't terminate clean!!!")
         return
 
     def update(self):
@@ -104,7 +118,7 @@ class Robot:
         degree = map_range(degree, 0, 180, 0,4096)
         self.bus.set_pwm_pca9685(12-pin, 0, degree)
 
-    def set_mode_led_on(self, on: bool):
+    def set_mode_led_on(self, on: bool=True):
         """
         set the mode led, to on or off
         :param on: led on
@@ -115,6 +129,32 @@ class Robot:
         else:
             self.IO.set(23, 0)
 
+    def set_digital(self, pin: int, value: int):
+        """
+        set the pwm value of D1-D3
+        :param pin: pin 1-3
+        :param value: 0-4096
+        :return:
+        """
+        if pin < 1 or pin > 3:
+            raise Exception(str(pin) + " is no a valid digital PIN")
+        if value < 0 or value > 4096:
+            raise Exception(str(value) + " is no a valid value")
+        self.bus.set_pwm_pca9685(16-pin,0,value)
+
+    def get_switch_value(self, sw_pin: int) -> int:
+        """
+        get the state of the switch
+        :param sw_pin: pin number (3 or 4)
+        :return:
+        """
+        if sw_pin == 3:
+            return int(self.IO.read(24))
+        if sw_pin == 4:
+            return int(self.IO.read(25))
+        raise Exception(str(sw_pin) + " is not a valid switch PIN")
+
+
     def set_restart_callback(self, func):
         """
         set the callback function on reset button press
@@ -122,6 +162,14 @@ class Robot:
         :return:
         """
         self.IO.func_callback = func
+
+    def set_mode_callback(self, func):
+        """
+        set the callback function on mode button press
+        :param func: the function name
+        :return:
+        """
+        self.IO.mde_callback = func
 
     def move_tc1508a(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
         """

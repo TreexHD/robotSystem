@@ -1,4 +1,5 @@
-import robotsystem.robot
+from robotsystem.robot import *
+
 
 
 def setup():
@@ -15,7 +16,7 @@ def loop():
 
 
 if __name__ == "__main__":
-    Robot = robotsystem.robot.Robot()
+    Robot = Robot_()
     setup()
     Robot.Debug.okblue("Setup Complete...")
     try:

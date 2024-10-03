@@ -15,29 +15,24 @@ class Debug:
     def __init__(self) -> None:
         pass
 
-    @staticmethod
-    def warning(msg: str):
+    def warning(self, msg: str):
         if msg.isprintable() and msg != "":
             print(f"{bcolors.WARNING}[WARNING]: {msg}{bcolors.ENDC}")
 
-    @staticmethod
-    def okblue(msg: str):
+    def okblue(self, msg: str):
         if msg.isprintable() and msg != "":
             print(f"{bcolors.OKBLUE}[System]: {msg}{bcolors.ENDC}")
 
-    @staticmethod
-    def error(msg: str):
+    def error(self, msg: str):
         if msg.isprintable() and msg != "":
             print(f"{bcolors.FAIL}[ERROR]: {msg}{bcolors.ENDC}")
 
-    @staticmethod
-    def error_imp(msg: str):
+    def error_imp(self, msg: str):
         print(f"{bcolors.FAIL}{bcolors.BOLD}[ERROR]: {msg}{bcolors.ENDC}")
 
-    @staticmethod
-    def info(msg: str):
+    def info(self, msg: str):
         print(f"{bcolors.OKGREEN}[Info]: {msg}{bcolors.ENDC}")
 
-    @staticmethod
-    def msg(msg: str):
+    def msg(self,msg: str):
         print(f"        {msg}")
+
