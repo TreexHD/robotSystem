@@ -24,3 +24,8 @@ script you can just copy.
 # Documentation
 
 ## Basic functionality
+
+# PCB
+## Solder it
+![Version V6 Front](https://github.com/TreexHD/robotSystem/robotSystem/data/FrontV6.png)
+![Version V6 Back](https://github.com/TreexHD/robotSystem/robotSystem/data/BackV6.png)
