@@ -27,5 +27,5 @@ script you can just copy.
 
 # PCB
 ## Solder it
-![Version V6 Front](https://github.com/TreexHD/robotSystem/robotSystem/data/FrontV6.png)
-![Version V6 Back](https://github.com/TreexHD/robotSystem/robotSystem/data/BackV6.png)
+![Version V6 Front](https://github.com/TreexHD/robotSystem/blob/main/data/FrontV6.png)
+![Version V6 Back](https://github.com/TreexHD/robotSystem/blob/main/data/BackV6.png)
