@@ -27,5 +27,12 @@ script you can just copy.
 
 # PCB
 ## Solder it
+FrontV6
 ![Version V6 Front](https://github.com/TreexHD/robotSystem/blob/main/data/FrontV6.png)
+BackV6
 ![Version V6 Back](https://github.com/TreexHD/robotSystem/blob/main/data/BackV6.png)
+Parts
+| PartValue     | PartId        |
+| ------------- | ------------- |
+| 4K7 Ohm       | R1,R2, |
+| 10k Ohm       | R16,R17,R18,R19 |
