@@ -34,7 +34,7 @@ BackV6
 Parts
 | PartValue     | PartId        |
 | ------------- | ------------- |
-| 220 Ohm       | R8 - R15     |
+| 220 Ohm       | R8-R15     |
 | 4K7 Ohm       | R1,R2, |
 | 10k Ohm       | R7,R16,R17,R18,R19 |
 | 1k Ohm        | R4, R5 |
@@ -42,6 +42,10 @@ Parts
 | connect       | JP1, JP2, JP4 |
 | socket        | PS1, PS2, J6 |
 | pin           | J1, J7, J8, J9, J10, J11, J12, J13, J19, J20, J22, J24, J25, J23, J26, J27, J27, J29|
+| 100uF         | C1, C5 |
+| LED           | D1, D2 |
+| ceramic       | C2, C3, C4|
+| diode         | D3-D18
 
 
 
