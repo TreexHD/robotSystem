@@ -35,4 +35,14 @@ Parts
 | PartValue     | PartId        |
 | ------------- | ------------- |
 | 4K7 Ohm       | R1,R2, |
-| 10k Ohm       | R16,R17,R18,R19 |
+| 10k Ohm       | R7,R16,R17,R18,R19 |
+| 1k Ohm        | R4, R5 |
+| 500 Ohm (LED) | R3, R6 | 
+| connect       | JP1, JP2, JP4 |
+
+
+
+
+
+
+
