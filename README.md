@@ -47,6 +47,10 @@ Parts
 | ceramic       | C2, C3, C4|
 | diode         | D3-D18
 
+## Connect it
+FrontV6 Connection
+![Version V6 Front Connection](https://github.com/TreexHD/robotSystem/blob/main/data/FrontV6_Connection.png)
+
 
 
 
