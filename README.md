@@ -56,7 +56,16 @@ Parts
 | 100uF         | C1, C5 |
 | LED           | D1, D2 |
 | ceramic       | C2, C3, C4|
-| diode         | D3-D18
+| diode         | D3-D18 |
+
+ICs
+| IC            | PartId        |
+| ------------- | ------------- |
+| MCP3008       | U1            |
+| SN74HC4066D   | U2, (U3)      |
+| PCA9685PW     | U5            |
+| L293D         | (U6), (U7)    |
+
 
 ## Connect it
 FrontV6 Connection
