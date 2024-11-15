@@ -20,6 +20,17 @@ script you can just copy.
 # WARNING ⚠️⚠️⚠️
 - the 6 pins marked as A_IN are not inputs. ignore them!
 
+# Testing 
+## Test connected Devices to I2C
+```
+sudo apt-get install i2c-tools
+```
+and run:
+```
+i2cdetect -y 1
+```
+
+
 
 # Documentation
 

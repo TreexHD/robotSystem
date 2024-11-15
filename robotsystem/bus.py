@@ -35,7 +35,7 @@ class I2C:  # NANO ADDRESS 0x08
         self.initialize_pca9685()
 
         time.sleep(1)
-        Debug.info("SMBus ready (I2C)")
+        Debug.info(None, "SMBus ready (I2C)")
 
     def initialize_pca9685(self):
         # Initialize the PCA9685 chip
@@ -66,14 +66,14 @@ class I2C:  # NANO ADDRESS 0x08
         try:
             self.bus.write_i2c_block_data(address, 0, data)
         except Exception as e:
-            Debug.error("Error sending I2C data: " + str(e))
+            Debug.error(None, "Error sending I2C data: " + str(e))
 
     def init_all_tofs(self):
         for i in range(4):
             try:
                 self.init_tof(i + 1)
             except:
-                Debug.msg("No TOF at PIN: " + str(i + 1))
+                Debug.msg(None, "No TOF at PIN: " + str(i + 1))
 
     def init_tof(self, pin: int):
         """
@@ -140,9 +140,9 @@ class I2C:  # NANO ADDRESS 0x08
             self.bus.write_byte_data(desired_address, 0x01a7, 0x1f)  # SYSTEM__MODE_GPIO0
             self.bus.write_byte_data(desired_address, 0x0030, 0x00)  # SYSTEM__MODE_GPIO0
             self.__initialized_tofs.append(pin)
-            Debug.msg("Initialized TOF" + str(pin))
+            Debug.msg(None, "Initialized TOF" + str(pin))
         except Exception as e:
-            Debug.error("Cant init TOF on pin " + str(pin) + " :" + str(e))
+            Debug.error(None, "Cant init TOF on pin " + str(pin) + " :" + str(e))
             raise
 
         self.io.set(TOF1, 1)
@@ -166,7 +166,7 @@ class I2C:  # NANO ADDRESS 0x08
             distance = int(self.bus.read_byte_data(desired_address, 0x062))  # RESULT__RANGE_VAL
             return distance
         except Exception as e:
-            Debug.error("Cant read TOF on pin " + str(pin) + " :" + str(e))
+            Debug.error(None, "Cant read TOF on pin " + str(pin) + " :" + str(e))
             return -1
 
     def update_tof(self) -> None:
@@ -180,7 +180,7 @@ class I2C:  # NANO ADDRESS 0x08
                 self.bus.write_byte_data(desired_address + i, 0x0180, 0x01)  # SYSRANGE__START
                 self.distances[i + 1] = int(self.bus.read_byte_data(desired_address + i, 0x062))  # RESULT__RANGE_VAL
             except Exception as e:
-                Debug.error("Cant read TOF on pin " + str(i) + " :" + str(e))
+                Debug.error(None, "Cant read TOF on pin " + str(i) + " :" + str(e))
 
 
 class IO:
@@ -197,7 +197,7 @@ class IO:
         GPIO.add_event_detect(25, GPIO.FALLING,
                               callback=self.restart_callback, bouncetime=100)
         GPIO.add_event_detect(24, GPIO.FALLING,
-                              callback=self.mde_callback, bouncetime=100)
+                              callback=self.mode_callback, bouncetime=100)
 
         # init GPIOs
         GPIO.setup(27, GPIO.OUT)  # GPIO 27 red light sensor
@@ -217,12 +217,12 @@ class IO:
         GPIO.output(TOF4, 1)
 
     def restart_callback(self):
-        Debug.okblue("Restart Pressed")
+        Debug.okblue(None, "Restart Pressed")
         if self.func_callback is not None:
             self.func_callback()
 
     def mode_callback(self):
-        Debug.okblue("Mode Pressed")
+        Debug.okblue(None, "Mode Pressed")
         if self.mde_callback is not None:
             self.mde_callback()
 
@@ -243,7 +243,7 @@ class IO:
             GPIO.output(27, 0)
             GPIO.output(22, 1)
         else:
-            Debug.warning(str(colour) + " is not a valid number for sensor colour!")
+            Debug.warning(None, str(colour) + " is not a valid number for sensor colour!")
 
 
     def set(self, pin: int, state: int):
