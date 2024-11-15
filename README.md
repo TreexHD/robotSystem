@@ -19,6 +19,8 @@ script you can just copy.
 
 # WARNING ⚠️⚠️⚠️
 - the 6 pins marked as A_IN are not inputs. ignore them!
+- In V5Rev1 and V6Rev1 are two tracks missing. Add cables as shown in the Image:
+  ![Version V6 Mistake](https://github.com/TreexHD/robotSystem/blob/main/data/fix_error.png)
 
 # Testing 
 ## Test connected Devices to I2C
