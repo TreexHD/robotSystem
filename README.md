@@ -73,7 +73,8 @@ ICs
 FrontV6 Connection
 ![Version V6 Front Connection](https://github.com/TreexHD/robotSystem/blob/main/data/FrontV6_Connection.png)
 
-
+# Connect a TOF Sensor
+![TOF Connection](https://github.com/TreexHD/robotSystem/blob/main/data/TOF_connection.png)
 
 
 
