@@ -69,13 +69,14 @@ ICs
 | L293D         | (U6), (U7)    |
 
 
-## Connect it
+# Connect it
 FrontV6 Connection
 ![Version V6 Front Connection](https://github.com/TreexHD/robotSystem/blob/main/data/FrontV6_Connection.png)
 
-# Connect a TOF Sensor
+## Connect a TOF Sensor
 ![TOF Connection](https://github.com/TreexHD/robotSystem/blob/main/data/TOF_connection.png)
 
-
+## Connect a Servo
+![TOF Connection](https://github.com/TreexHD/robotSystem/blob/main/data/Servo_connect.png)
 
 
