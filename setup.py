@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 DESCRIPTION = 'this is the robot System library'
 LONG_DESCRIPTION = 'A package that allows easy access to all functions of the robot'
 

@@ -56,6 +56,7 @@ class Robot_:
         :return:
         """
         try:
+            self.move(0,0,0,0)
             self.IO.cleanup()
         except Exception as e:
             Debug.error_imp(str(e) + " --- Couldn't terminate clean!!!")
