@@ -105,45 +105,26 @@ class I2C:  # NANO ADDRESS 0x08
         time.sleep(0.01)
 
         try:
-            # Change address of tof
-            self.bus.write_byte_data(default_address, 0x212, desired_address)
 
-            # INIT the sensor
-            self.bus.write_byte_data(desired_address, 0x0207, 0x01)  # SYSTEM__FRESH_OUT_OF_RESET
-            self.bus.write_byte_data(desired_address, 0x0208, 0x01)  # SYSTEM__FRESH_OUT_OF_RESET
-            self.bus.write_byte_data(desired_address, 0x0096, 0x00)  # SYSTEM__MODE_GPIO1
-            self.bus.write_byte_data(desired_address, 0x0097, 0xfd)  # SYSTEM__MODE_GPIO1
-            self.bus.write_byte_data(desired_address, 0x00e3, 0x00)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00e4, 0x04)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00e5, 0x02)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00e6, 0x01)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00e7, 0x03)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00f5, 0x02)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00d9, 0x05)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00db, 0xce)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00dc, 0x03)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00dd, 0xf8)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x009f, 0x00)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00a3, 0x3c)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00b7, 0x00)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00bb, 0x3c)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00b2, 0x09)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00ca, 0x09)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x0198, 0x01)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x01b0, 0x17)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x01ad, 0x00)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x00ff, 0x05)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x0100, 0x05)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x0199, 0x05)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x01a6, 0x1b)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x01ac, 0x3e)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x01a7, 0x1f)  # SYSTEM__MODE_GPIO0
-            self.bus.write_byte_data(desired_address, 0x0030, 0x00)  # SYSTEM__MODE_GPIO0
+            # Change the I2C address of the VL53L0X
+            self.bus.write_byte_data(default_address, 0x8A, desired_address)
+            time.sleep(0.01)
+
+            # Initialize the sensor
+            self.bus.write_byte_data(desired_address, 0x88, 0x00)  # Set I2C standard mode
+            self.bus.write_byte_data(desired_address, 0x80, 0x01)  # Set I2C fast mode
+            self.bus.write_byte_data(desired_address, 0xFF, 0x01)  # Enter initialization mode
+            self.bus.write_byte_data(desired_address, 0x00, 0x00)  # Set default settings
+            self.bus.write_byte_data(desired_address, 0x91, 0x3C)  # Set specific calibration value
+            self.bus.write_byte_data(desired_address, 0x00, 0x01)  # Start initialization
+            self.bus.write_byte_data(desired_address, 0xFF, 0x00)  # Exit initialization mode
+            self.bus.write_byte_data(desired_address, 0x80, 0x00)  # Set I2C standard mode
+            time.sleep(0.01)
+
             self.__initialized_tofs.append(pin)
             Debug.msg(None, "Initialized TOF" + str(pin))
         except Exception as e:
             Debug.error(None, "Cant init TOF on pin " + str(pin) + " :" + str(e))
-            raise
 
         self.io.set(TOF1, 1)
         self.io.set(TOF2, 1)
@@ -156,15 +137,25 @@ class I2C:  # NANO ADDRESS 0x08
         :param pin: the pin number of the tof [1,2,3,4]
         :return: returns the distance
         """
+        # Define VL53L0X registers
+        VL53L0X_REG_SYSRANGE_START = 0x00
+        VL53L0X_REG_RESULT_RANGE_STATUS = 0x14
+
+
         if pin not in [1, 2, 3, 4]:
             raise ValueError("Invalid value for 'pin'. Expected 1, 2, 3, or 4.")
         desired_address = 0x29 + pin
 
         try:
-            self.bus.write_byte_data(desired_address, 0x0180, 0x01)  # SYSRANGE__START
-            time.sleep(0.01)  # WAIT
-            distance = int(self.bus.read_byte_data(desired_address, 0x062))  # RESULT__RANGE_VAL
-            return distance
+            # Start a measurement
+            self.bus.write_byte_data(desired_address , VL53L0X_REG_SYSRANGE_START, 0x01)
+            time.sleep(0.01)
+
+            # Read the distance
+            """Read a word (2 bytes) of data from a specific register."""
+            high = self.bus.read_byte_data(desired_address, VL53L0X_REG_RESULT_RANGE_STATUS + 10)
+            low = self.bus.read_byte_data(desired_address, (VL53L0X_REG_RESULT_RANGE_STATUS + 10) + 1)
+            return int((high << 8) + low)
         except Exception as e:
             Debug.error(None, "Cant read TOF on pin " + str(pin) + " :" + str(e))
             return -1
