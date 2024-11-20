@@ -34,10 +34,7 @@ i2cdetect -y 1
 
 
 
-# Documentation
-
-## Basic functionality
-
+# [Documentation](https://github.com/TreexHD/robotSystem/wiki/Functions)
 # PCB
 ## Solder it
 FrontV6
