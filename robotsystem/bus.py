@@ -44,8 +44,12 @@ class I2C:  # NANO ADDRESS 0x08
 
     def initialize_pca9685(self):
         # Initialize the PCA9685 chip
-        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, 0x00)  # Normal mode
-        self.set_pwm_freq_pca9685(100)  # Set frequency to 100Hz
+        try:
+            self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, 0x00)  # Normal mode
+            self.set_pwm_freq_pca9685(100)  # Set frequency to 100Hz
+        except Exception as e:
+            Debug.error(None, "No connection to PCA9685 ")
+            raise e
 
     def set_pwm_freq_pca9685(self, freq_hz):
         # Set the PWM frequency
@@ -60,10 +64,14 @@ class I2C:  # NANO ADDRESS 0x08
 
     def set_pwm_pca9685(self, channel: int, on: int, off: int):
         # Set the PWM value for a specific channel
-        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel, on & 0xFF)
-        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 1, on >> 8)
-        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 2, off & 0xFF)
-        self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 3, off >> 8)
+        try:
+            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel, on & 0xFF)
+            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 1, on >> 8)
+            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 2, off & 0xFF)
+            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 3, off >> 8)
+        except Exception as e:
+            Debug.error(None, "No connection to PCA9685 ")
+            raise e
 
     def write_data(self, address, first, second, third):
         data = [first, second, third]
