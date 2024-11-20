@@ -43,7 +43,7 @@ class Robot_:
             self.IO = robotsystem.bus.IO()
             self.bus = robotsystem.bus.I2C(self.IO)
 
-    def delay(self, delay_in_ms: int):
+    def delay(self, delay_in_ms: int) -> None:
         """
         wait milliseconds
         :param delay_in_ms:
@@ -51,7 +51,7 @@ class Robot_:
         """
         time.sleep(delay_in_ms/1000)
 
-    def terminate(self):
+    def terminate(self) -> None:
         """
         terminates the whole process correctly
         :return:
@@ -63,7 +63,7 @@ class Robot_:
             Debug.error_imp(str(e) + " --- Couldn't terminate clean!!!")
         return
 
-    def update(self):
+    def update(self) -> None:
         """
         updates some robot data. Executed at the end of loop
         :return:
@@ -85,7 +85,7 @@ class Robot_:
             raise Exception(str(value) + " is not a valid VALUE")
         self.threshold[pin] = value
 
-    def set_motor_invert(self, motor1: bool, motor2: bool, motor3: bool, motor4: bool):
+    def set_motor_invert(self, motor1: bool, motor2: bool, motor3: bool, motor4: bool) -> None:
         """
         select the motors where the value should be inverted with true
         :return:
@@ -99,8 +99,10 @@ class Robot_:
         """
         if l293:
             self.motor_driver = self.__move_l293
+            Debug.info("Selected L293 Motor Driver")
         else:
             self.motor_driver = self.__move_tc1508a
+            Debug.info("Selected tc1508a Motor Driver")
 
     def get_distance(self, pin: int) -> int:
         """
@@ -118,7 +120,7 @@ class Robot_:
         """
         return self.MCP3008.get_one(pin)
 
-    def set_sensor_leds(self, colour: int):
+    def set_sensor_leds(self, colour: int) -> None:
         """
         set the colour of the sensor leds
         :param colour: 0=off 1=red 2=green
@@ -126,7 +128,7 @@ class Robot_:
         """
         self.IO.set_sensor_leds(colour)
 
-    def set_servo_degree(self, pin: int, degree: int):
+    def set_servo_degree(self, pin: int, degree: int) -> None:
         """
         set the angle of a specific servo with the pin 0-4
         :param pin: the pin of the servo
@@ -138,7 +140,7 @@ class Robot_:
         degree = map_range(degree, 0, 180, 0,4096)
         self.bus.set_pwm_pca9685(12-pin, 0, degree)
 
-    def set_mode_led_on(self, on: bool=True):
+    def set_mode_led_on(self, on: bool=True) -> None:
         """
         set the mode led, to on or off
         :param on: led on
@@ -149,7 +151,7 @@ class Robot_:
         else:
             self.IO.set(23, 0)
 
-    def set_digital(self, pin: int, value: int):
+    def set_digital(self, pin: int, value: int) -> None:
         """
         set the pwm value of D1-D3
         :param pin: pin 1-3
@@ -175,7 +177,7 @@ class Robot_:
         raise Exception(str(sw_pin) + " is not a valid switch PIN")
 
 
-    def set_restart_callback(self, func):
+    def set_restart_callback(self, func) -> None:
         """
         set the callback function on reset button press
         :param func: the function name
@@ -183,7 +185,7 @@ class Robot_:
         """
         self.IO.func_callback = func
 
-    def set_mode_callback(self, func):
+    def set_mode_callback(self, func) -> None:
         """
         set the callback function on mode button press
         :param func: the function name
@@ -191,7 +193,22 @@ class Robot_:
         """
         self.IO.mde_callback = func
 
+    def stop(self) -> None:
+        """
+        stop all movement of the robot
+        :return:
+        """
+        self.move(0,0,0,0)
+
     def move(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
+        """
+        move the motors, values from
+        :param motor_1:
+        :param motor_2:
+        :param motor_3:
+        :param motor_4:
+        :return:
+        """
         if self.motor_invert[0]:
             motor_1 = motor_1 * -1
         if self.motor_invert[1]:
