@@ -15,6 +15,11 @@ TOF2 = 5
 TOF3 = 6
 TOF4 = 26
 PCA9685_ADDRESS = 0x60
+TOF_ADDRESS = 0x29
+
+# Define VL53L0X registers
+VL53L0X_REG_SYSRANGE_START = 0x00
+VL53L0X_REG_RESULT_RANGE_STATUS = 0x14
 
 #Registers of PCA9685
 MODE1 = 0x00
@@ -69,6 +74,10 @@ class I2C:  # NANO ADDRESS 0x08
             Debug.error(None, "Error sending I2C data: " + str(e))
 
     def init_all_tofs(self):
+        self.io.set(TOF1, 0)
+        self.io.set(TOF2, 0)
+        self.io.set(TOF3, 0)
+        self.io.set(TOF4, 0)
         for i in range(4):
             try:
                 self.init_tof(i + 1)
@@ -82,25 +91,17 @@ class I2C:  # NANO ADDRESS 0x08
         """
         if pin not in [1, 2, 3, 4]:
             raise ValueError("Invalid value for 'pin'. Expected 1, 2, 3, or 4.")
-        default_address = 0x29
-        desired_address = 0x29 + pin
+        default_address = TOF_ADDRESS
+        desired_address = TOF_ADDRESS + pin
 
         if pin == 1:
-            self.io.set(TOF2, 0)
-            self.io.set(TOF3, 0)
-            self.io.set(TOF4, 0)
+            self.io.set(TOF1, 1)
         elif pin == 2:
-            self.io.set(TOF1, 0)
-            self.io.set(TOF3, 0)
-            self.io.set(TOF4, 0)
+            self.io.set(TOF2, 1)
         elif pin == 3:
-            self.io.set(TOF1, 0)
-            self.io.set(TOF2, 0)
-            self.io.set(TOF4, 0)
+            self.io.set(TOF3, 1)
         elif pin == 4:
-            self.io.set(TOF1, 0)
-            self.io.set(TOF2, 0)
-            self.io.set(TOF3, 0)
+            self.io.set(TOF4, 1)
 
         time.sleep(0.01)
 
@@ -122,14 +123,9 @@ class I2C:  # NANO ADDRESS 0x08
             time.sleep(0.01)
 
             self.__initialized_tofs.append(pin)
-            Debug.msg(None, "Initialized TOF" + str(pin))
+            Debug.info(None, "Initialized TOF" + str(pin))
         except Exception as e:
-            Debug.error(None, "Cant init TOF on pin " + str(pin) + " :" + str(e))
-
-        self.io.set(TOF1, 1)
-        self.io.set(TOF2, 1)
-        self.io.set(TOF3, 1)
-        self.io.set(TOF4, 1)
+            Debug.warning(None, "Cant init TOF on pin " + str(pin) + " :" + str(e))
 
     def read_tof(self, pin: int) -> int:
         """
@@ -137,14 +133,9 @@ class I2C:  # NANO ADDRESS 0x08
         :param pin: the pin number of the tof [1,2,3,4]
         :return: returns the distance
         """
-        # Define VL53L0X registers
-        VL53L0X_REG_SYSRANGE_START = 0x00
-        VL53L0X_REG_RESULT_RANGE_STATUS = 0x14
-
-
         if pin not in [1, 2, 3, 4]:
             raise ValueError("Invalid value for 'pin'. Expected 1, 2, 3, or 4.")
-        desired_address = 0x29 + pin
+        desired_address = TOF_ADDRESS + pin
 
         try:
             # Start a measurement
@@ -165,11 +156,18 @@ class I2C:  # NANO ADDRESS 0x08
         updates the tof distances without delay. The distance is delayed because of that
         :return:
         """
-        desired_address = 0x29
+        desired_address = TOF_ADDRESS
         for i in self.__initialized_tofs:
             try:
-                self.bus.write_byte_data(desired_address + i, 0x0180, 0x01)  # SYSRANGE__START
-                self.distances[i + 1] = int(self.bus.read_byte_data(desired_address + i, 0x062))  # RESULT__RANGE_VAL
+                # Start a measurement
+                self.bus.write_byte_data(desired_address + i, VL53L0X_REG_SYSRANGE_START, 0x01)
+
+                # Read the distance
+                """Read a word (2 bytes) of data from a specific register."""
+                high = self.bus.read_byte_data(desired_address, VL53L0X_REG_RESULT_RANGE_STATUS + 10)
+                low = self.bus.read_byte_data(desired_address, (VL53L0X_REG_RESULT_RANGE_STATUS + 10) + 1)
+
+                self.distances[i + 1] = int((high << 8) + low)
             except Exception as e:
                 Debug.error(None, "Cant read TOF on pin " + str(i) + " :" + str(e))
 

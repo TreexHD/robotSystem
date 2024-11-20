@@ -33,6 +33,7 @@ class Robot_:
 
     def __init__(self):
         self.motor_driver = self.__move_l293
+        self.motor_invert = [False, False, False, False]
         self.threshold = [None, 2350, 2350, 2350, 2350, 2350, 3900, 3900]
         self.Debug = robotsystem.debug.Debug()
         self.distances = [None, -1, -1, -1, -1]
@@ -83,6 +84,13 @@ class Robot_:
         if pin < 0 or pin > 4096:
             raise Exception(str(value) + " is not a valid VALUE")
         self.threshold[pin] = value
+
+    def set_motor_invert(self, motor1: bool, motor2: bool, motor3: bool, motor4: bool):
+        """
+        select the motors where the value should be inverted with true
+        :return:
+        """
+        self.motor_invert = [motor1, motor2, motor3, motor4]
 
     def set_motor_driver(self, l293: bool) -> None:
         """
@@ -184,6 +192,14 @@ class Robot_:
         self.IO.mde_callback = func
 
     def move(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
+        if self.motor_invert[0]:
+            motor_1 = motor_1 * -1
+        if self.motor_invert[1]:
+            motor_2 = motor_2 * -1
+        if self.motor_invert[2]:
+            motor_3 = motor_3 * -1
+        if self.motor_invert[3]:
+            motor_4 = motor_4 * -1
         self.motor_driver(motor_1, motor_2, motor_3, motor_4)
 
     def __move_tc1508a(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
