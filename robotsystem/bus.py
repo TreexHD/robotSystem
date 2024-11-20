@@ -185,6 +185,7 @@ class IO:
         self.func_callback = None
         self.mde_callback = None
         GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
 
         #init inputs
         GPIO.setup(24, GPIO.IN)  # GPIO 24 Mode Button (SW3)
