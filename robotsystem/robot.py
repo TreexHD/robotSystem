@@ -60,7 +60,7 @@ class Robot_:
             self.move(0,0,0,0)
             self.IO.cleanup()
         except Exception as e:
-            Debug.error_imp(str(e) + " --- Couldn't terminate clean!!!")
+            Debug.error_imp(None, str(e) + " --- Couldn't terminate clean!!!")
         return
 
     def update(self) -> None:
@@ -257,17 +257,17 @@ class Robot_:
             m4a = 0
             m4b = motor_4 * -1
 
-        self.bus.set_pwm_pca9685(0, 0, m1a)
-        self.bus.set_pwm_pca9685(4, 0, m1b)
+        self.bus.set_pwm_pca9685(2, 0, m1a)
+        self.bus.set_pwm_pca9685(6, 0, m1b)
 
-        self.bus.set_pwm_pca9685(1, 0, m2a)
-        self.bus.set_pwm_pca9685(5, 0, m2b)
+        self.bus.set_pwm_pca9685(3, 0, m2a)
+        self.bus.set_pwm_pca9685(7, 0, m2b)
 
-        self.bus.set_pwm_pca9685(2, 0, m3a)
-        self.bus.set_pwm_pca9685(6, 0, m3b)
+        self.bus.set_pwm_pca9685(0, 0, m3a)
+        self.bus.set_pwm_pca9685(4, 0, m3b)
 
-        self.bus.set_pwm_pca9685(3, 0, m4a)
-        self.bus.set_pwm_pca9685(7, 0, m4b)
+        self.bus.set_pwm_pca9685(1, 0, m4a)
+        self.bus.set_pwm_pca9685(5, 0, m4b)
 
     def __move_l293(self, motor_1: int, motor_2: int, motor_3: int, motor_4: int) -> None:
         """
