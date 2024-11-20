@@ -99,10 +99,10 @@ class Robot_:
         """
         if l293:
             self.motor_driver = self.__move_l293
-            Debug.info("Selected L293 Motor Driver")
+            Debug.info(None,"Selected L293 Motor Driver")
         else:
             self.motor_driver = self.__move_tc1508a
-            Debug.info("Selected tc1508a Motor Driver")
+            Debug.info(None, "Selected tc1508a Motor Driver")
 
     def get_distance(self, pin: int) -> int:
         """
