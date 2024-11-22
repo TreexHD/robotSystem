@@ -10,7 +10,7 @@ def setup():
     Robot.set_threshold(M, 2350)
     Robot.set_threshold(R, 2350)
     Robot.set_threshold(RR, 2350)
-    Robot.set_motor_driver(True)
+    Robot.set_motor_driver(False) # tca... CHIP
 
 
 def loop():

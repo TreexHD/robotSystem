@@ -17,7 +17,7 @@ pip3 install git+https://github.com/TreexHD/robotSystem.git
 The file [Example1](https://github.com/TreexHD/robotSystem/tree/main/examples/basic_example.py) shows a simple starting 
 script you can just copy. 
 
-# [Documentation](https://github.com/TreexHD/robotSystem/wiki/Functions)
+# [Documentation](https://github.com/TreexHD/robotSystem/wiki/Robot-Class)
 
 # WARNING ⚠️⚠️⚠️
 - the 6 pins marked as A_IN are not inputs. ignore them!
