@@ -92,6 +92,13 @@ class Robot_:
         """
         self.motor_invert = [motor1, motor2, motor3, motor4]
 
+    def set_pca_address(self, address: hex) -> None:
+        """
+        change the address of the pca9685 ic. use(hex value)
+        :return:
+        """
+        self.bus.pca_address = address
+
     def set_motor_driver(self, l293: bool) -> None:
         """
         select the motor driver type l293 or tc1508a

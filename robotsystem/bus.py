@@ -28,6 +28,7 @@ LED0_ON_L = 0x06
 
 class I2C:  # NANO ADDRESS 0x08
     def __init__(self, io):
+        self.pca_address = PCA9685_ADDRESS
         self.io = io
         self.bus = smbus.SMBus(1)
         self.distances = [None, -1, -1, -1, -1]  # The distances of the TOF sensors
@@ -45,7 +46,7 @@ class I2C:  # NANO ADDRESS 0x08
     def initialize_pca9685(self):
         # Initialize the PCA9685 chip
         try:
-            self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, 0x00)  # Normal mode
+            self.bus.write_byte_data(self.pca_address, MODE1, 0x00)  # Normal mode
             self.set_pwm_freq_pca9685(100)  # Set frequency to 100Hz
         except Exception as e:
             Debug.error(None, "No connection to PCA9685 ")
@@ -54,21 +55,21 @@ class I2C:  # NANO ADDRESS 0x08
     def set_pwm_freq_pca9685(self, freq_hz):
         # Set the PWM frequency
         prescale_val = int(25000000.0 / (4096 * freq_hz) - 1)
-        old_mode = self.bus.read_byte_data(PCA9685_ADDRESS, MODE1)
+        old_mode = self.bus.read_byte_data(self.pca_address, MODE1)
         new_mode = (old_mode & 0x7F) | 0x10  # Sleep
-        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, new_mode)
-        self.bus.write_byte_data(PCA9685_ADDRESS, PRESCALE, prescale_val)
-        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, old_mode)
+        self.bus.write_byte_data(self.pca_address, MODE1, new_mode)
+        self.bus.write_byte_data(self.pca_address, PRESCALE, prescale_val)
+        self.bus.write_byte_data(self.pca_address, MODE1, old_mode)
         time.sleep(0.005)
-        self.bus.write_byte_data(PCA9685_ADDRESS, MODE1, old_mode | 0x80)
+        self.bus.write_byte_data(self.pca_address, MODE1, old_mode | 0x80)
 
     def set_pwm_pca9685(self, channel: int, on: int, off: int):
         # Set the PWM value for a specific channel
         try:
-            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel, on & 0xFF)
-            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 1, on >> 8)
-            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 2, off & 0xFF)
-            self.bus.write_byte_data(PCA9685_ADDRESS, LED0_ON_L + 4 * channel + 3, off >> 8)
+            self.bus.write_byte_data(self.pca_address, LED0_ON_L + 4 * channel, on & 0xFF)
+            self.bus.write_byte_data(self.pca_address, LED0_ON_L + 4 * channel + 1, on >> 8)
+            self.bus.write_byte_data(self.pca_address, LED0_ON_L + 4 * channel + 2, off & 0xFF)
+            self.bus.write_byte_data(self.pca_address, LED0_ON_L + 4 * channel + 3, off >> 8)
         except Exception as e:
             Debug.error(None, "No connection to PCA9685 ")
             raise e
