@@ -285,44 +285,43 @@ class Robot_:
         :param motor_4: for motor 4
         :return:
         """
-        #Motor 1
-        if motor_1 > 0:
-            m1a = 4096
-            m1b = motor_1
+        #Motor 3
+        if motor_3 > 0:
+            m1a = 4095
+            m1b = motor_3
         else:
             m1a = 0
-            m1b = motor_1 * -1
-        # Motor 2
-        if motor_2 > 0:
-            m2a = 4096
-            m2b = motor_2
-        else:
-            m2a = 0
-            m2b = motor_2 * -1
-        # Motor 3
-        if motor_3 > 0:
-            m3a = 4096
-            m3b = motor_3
-        else:
-            m3a = 0
-            m3b = motor_3 * -1
+            m1b = motor_3 * -1
         # Motor 4
         if motor_4 > 0:
-            m4a = 4096
-            m4b = motor_4
+            m2a = 4095
+            m2b = motor_4
+        else:
+            m2a = 0
+            m2b = motor_4 * -1
+        # Motor 1
+        if motor_1 > 0:
+            m3a = 4095
+            m3b = motor_1
+        else:
+            m3a = 0
+            m3b = motor_1 * -1
+        # Motor 2
+        if motor_2 > 0:
+            m4a = 4095
+            m4b = motor_2
         else:
             m4a = 0
-            m4b = motor_4 * -1
+            m4b = motor_2 * -1
 
         self.bus.set_pwm_pca9685(0, 0, m1a)
-        self.bus.set_pwm_pca9685(4, 0, m1b)
+        self.bus.set_pwm_pca9685(4, 0, m1b) #ENA
 
         self.bus.set_pwm_pca9685(1, 0, m2a)
-        self.bus.set_pwm_pca9685(5, 0, m2b)
+        self.bus.set_pwm_pca9685(5, 0, m2b) #ENB
 
         self.bus.set_pwm_pca9685(2, 0, m3a)
-        self.bus.set_pwm_pca9685(6, 0, m3b)
+        self.bus.set_pwm_pca9685(6, 0, m3b) # ENC
 
         self.bus.set_pwm_pca9685(3, 0, m4a)
-        self.bus.set_pwm_pca9685(7, 0, m4b)
-
+        self.bus.set_pwm_pca9685(7, 0, m4b) # END
