@@ -32,6 +32,7 @@ def map_range(x, in_min, in_max, out_min, out_max):
 class Robot_:
 
     def __init__(self):
+        self.pca_address = 0x60
         self.motor_driver = self.__move_l293
         self.motor_invert = [False, False, False, False]
         self.threshold = [None, 2350, 2350, 2350, 2350, 2350, 3900, 3900]
@@ -62,6 +63,14 @@ class Robot_:
         except Exception as e:
             Debug.error_imp(None, str(e) + " --- Couldn't terminate clean!!!")
         return
+
+    def init(self) -> None:
+        """
+        inits the robot data. Executed at the end of the setup
+        :return:
+        """
+        self.bus.pca_address = self.pca_address
+        self.bus.initialize_pca9685()
 
     def update(self) -> None:
         """
@@ -97,7 +106,7 @@ class Robot_:
         change the address of the pca9685 ic. use(hex value)
         :return:
         """
-        self.bus.pca_address = address
+        self.pca_address = address
 
     def set_motor_driver(self, l293: bool) -> None:
         """

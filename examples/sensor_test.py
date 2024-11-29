@@ -22,6 +22,7 @@ def loop():
 if __name__ == "__main__":
     Robot = Robot_()
     setup()
+    Robot.init()
     Robot.Debug.okblue("Setup Complete...")
     try:
         while True:

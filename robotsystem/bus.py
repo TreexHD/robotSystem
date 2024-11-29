@@ -38,7 +38,7 @@ class I2C:  # NANO ADDRESS 0x08
 
         #actions
         self.init_all_tofs()
-        self.initialize_pca9685()
+        #self.initialize_pca9685() #moved to Robot.init()
 
         time.sleep(1)
         Debug.info(None, "SMBus ready (I2C)")
