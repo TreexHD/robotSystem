@@ -5,12 +5,14 @@ def setup():
     your setup code here
     """
     Robot.Debug.msg("This is the line-following example...")
-    Robot.set_threshold(LL, 2350)
-    Robot.set_threshold(L, 2350)
-    Robot.set_threshold(M, 2350)
-    Robot.set_threshold(R, 2350)
-    Robot.set_threshold(RR, 2350)
-    Robot.set_motor_driver(False) # tca... CHIP
+    #Robot.set_threshold(LL, 2350)
+    #Robot.set_threshold(L, 2350)
+    #Robot.set_threshold(M, 2350)
+    #Robot.set_threshold(R, 2350)
+    #Robot.set_threshold(RR, 2350)
+    # instead
+    Robot.load_calibration()
+    Robot.set_motor_driver(True) # l2... CHIP
 
 
 def loop():

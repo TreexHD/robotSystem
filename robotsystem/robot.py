@@ -3,6 +3,8 @@ this is the main module
 """
 import platform
 import time
+import os
+import json
 
 from robotsystem.debug import Debug
 
@@ -208,6 +210,66 @@ class Robot_:
         :return:
         """
         self.IO.mde_callback = func
+
+    def load_calibration(self) -> None:
+        """
+        load the threshold values from the data.json file
+        :return:
+        """
+        try:
+            with open('data.json') as f:
+                d = json.load(f)
+        except Exception as e:
+            Debug.error(None, "can't read data.json: " + str(e))
+        try:
+            self.set_threshold(LL, int(d['sensor']['LL']))
+            self.set_threshold(L, int(d['sensor']['L']))
+            self.set_threshold(M, int(d['sensor']['M']))
+            self.set_threshold(R, int(d['sensor']['R']))
+            self.set_threshold(RR, int(d['sensor']['RR']))
+            Debug.msg(None, str(d['sensor']))
+            Debug.okblue(None, "Data loaded successfully!")
+        except Exception as e:
+            Debug.error(None, "can't process data (wrong formatting): " + str(e))
+
+    def start_calibration(self) -> None:
+        """
+        start the sensor calibration sequenz
+        :return:
+        """
+        white_value = [0,0]
+        black_value = [0,0]
+        middle_value = [0,0,0,0,0]
+
+        self.Debug.info("All white!")
+        self.delay(3500)
+        for i in range(1, 6):
+            pass
+            #white_value.append(self.get_grayscale(i))
+        self.Debug.info("All black!")
+        self.delay(3500)
+        for i in range(1, 6):
+            pass
+            #black_value.append(self.get_grayscale(i))
+        for i in range(0, 5):
+            pass
+            #middle_value.append(int((black_value[i] - white_value[i]) / 2 + white_value[i]))
+        self.Debug.info("Value for black: " + str(black_value))
+        self.Debug.info("Value for white: " + str(white_value))
+        self.Debug.info("Value for middle: " + str(middle_value))
+        #print(os.getcwd())
+
+        data = {'sensor': {
+                    'LL': middle_value[0],
+                    'L': middle_value[1],
+                    'M': middle_value[2],
+                    'R': middle_value[3],
+                    'RR': middle_value[4],
+        }}
+        with open('data.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        self.Debug.info("Wrote file: data.json")
+
 
     def stop(self) -> None:
         """
