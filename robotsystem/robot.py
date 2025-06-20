@@ -18,13 +18,13 @@ import robotsystem.debug
 import robotsystem.bus
 
 # CONST
-LL = 1
-L = 2
+LL = 5
+L = 4
 M = 3
-R = 4
-RR = 5
-LG = 6
-RG = 7
+R = 2
+RR = 1
+LG = 7
+RG = 6
 
 
 def map_range(x, in_min, in_max, out_min, out_max):
