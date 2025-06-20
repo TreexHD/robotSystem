@@ -293,15 +293,15 @@ class MCP3008:
             return -1
         x = int(0)
         if int(self.read(channel=1)) > threshold[1]:
-            x += 10000  # LL
+            x += 1  # RR
         if int(self.read(channel=2)) > threshold[2]:
-            x += 1000  # L
+            x += 10 # R
         if int(self.read(channel=3)) > threshold[3]:
             x += 100  # M
         if int(self.read(channel=4)) > threshold[4]:
-            x += 10  # R
+            x += 1000  # L
         if int(self.read(channel=5)) > threshold[5]:
-            x += 1  # RR
+            x += 10000  # LL
         return x
 
     def close(self):
