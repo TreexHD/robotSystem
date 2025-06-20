@@ -245,15 +245,15 @@ class Robot_:
         self.delay(3500)
         for i in range(1, 6):
             pass
-            #white_value.append(self.get_grayscale(i))
+            white_value.append(self.get_grayscale(i))
         self.Debug.info("All black!")
         self.delay(3500)
         for i in range(1, 6):
             pass
-            #black_value.append(self.get_grayscale(i))
+            black_value.append(self.get_grayscale(i))
         for i in range(0, 5):
             pass
-            #middle_value.append(int((black_value[i] - white_value[i]) / 2 + white_value[i]))
+            middle_value.append(int((black_value[i] - white_value[i]) / 2 + white_value[i]))
         self.Debug.info("Value for black: " + str(black_value))
         self.Debug.info("Value for white: " + str(white_value))
         self.Debug.info("Value for middle: " + str(middle_value))
